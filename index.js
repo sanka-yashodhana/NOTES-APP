@@ -2,10 +2,6 @@ require("dotenv").config();
 
 
 const mongoose = require("mongoose");
-const express = require("express");
-const cors = require("cors");
-
-const dns = require("dns");
 
 const connectionString = process.env.MONGODB_URL;
 
@@ -14,16 +10,14 @@ mongoose
   .then(() => console.log("Connected to MongoDB successfully"))
   .catch((err) => {
     console.error("MongoDB connection error:", err);
-    process.exit(1);
   });
 
-const User = require("./models/userModel");
-const Note = require("./models/noteModel");
+const User = require("./models/userModel.js");
+const Note = require("./models/noteModel.js");
 
 const express = require("express");
 const cors = require("cors");
 
-//dns.setServers(["1.1.1.1", "8.8.8.8"]);
 
 const app = express();
 
@@ -38,11 +32,6 @@ app.use(
   }),
 );
 
-app.get("/", (req, res) => {
-  res.json({
-    data: "hello",
-  });
-});
 
 //Create a Account
 app.post("/create-account", async (req, res) => {
