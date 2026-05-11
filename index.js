@@ -1,9 +1,13 @@
 require("dotenv").config();
 
-const config = require("./config.json");
+//const config = require("./config.json");
 const mongoose = require("mongoose");
+const express = require("express");
+const cors = require("cors");
 
 const dns = require("dns");
+
+const connectionString = process.env.MONGODB_URL;
 
 mongoose
   .connect(config.connectionString)
