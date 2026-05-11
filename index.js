@@ -1,6 +1,6 @@
 require("dotenv").config();
 
-//const config = require("./config.json");
+
 const mongoose = require("mongoose");
 const express = require("express");
 const cors = require("cors");
@@ -10,7 +10,7 @@ const dns = require("dns");
 const connectionString = process.env.MONGODB_URL;
 
 mongoose
-  .connect(config.connectionString)
+  .connect(connectionString)
   .then(() => console.log("Connected to MongoDB successfully"))
   .catch((err) => {
     console.error("MongoDB connection error:", err);
@@ -345,6 +345,11 @@ app.get("/search-notes/", authenticateToken, async (req, res) => {
   }
 });
 
-app.listen(8000, () => console.log("Server is running on port 8000"));
+const PORT = process.env.PORT || 8000;
+if (process.env.NODE_ENV !== 'production') {
+    app.listen(PORT, () => {
+        console.log(`Server is running on port ${PORT}`);
+    });
+}
 
 module.exports = app;
