@@ -36,7 +36,7 @@ app.use(express.json());
 
 app.use(
   cors({
-    origin: "*",
+    origin: "https://notes-app-frontend-psi-livid.vercel.app",
   }),
 );
 
