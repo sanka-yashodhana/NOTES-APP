@@ -4,21 +4,15 @@ const mongoose = require("mongoose");
 
 const connectionString = process.env.MONGODB_URL;
 
-const connectDB = async () => {
-  if (mongoose.connection.readyState >= 1) return; // Use existing connection
+const connectDB = async()=>{
 
-  try {
-    await mongoose
-      .connect(connectionString)
-      .then(() => console.log("Connected to MongoDB successfully"))
-      .catch((err) => {
-        console.error("MongoDB connection error:", err);
-      });
-    console.log("Connected to MongoDB");
-  } catch (err) {
-    console.error("MongoDB connection error:", err);
-  }
-};
+    mongoose.connection.on('connected', ()=>{
+        console.log("DB Connected")
+    })
+
+   await mongoose.connect(`${connectionString}/Note-App-New`)
+}
+
 
 connectDB();
 
