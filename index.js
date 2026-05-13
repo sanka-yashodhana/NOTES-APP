@@ -30,7 +30,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173", 
-      "https://notes-app-frontend-psi-livid.vercel.app/dashboard" 
+      "https://notes-app-frontend-jhrv3frff-sanka-yashodhanas-projects.vercel.app/dashboard" 
     ],
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
