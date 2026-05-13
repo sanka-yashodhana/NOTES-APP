@@ -23,6 +23,9 @@ const Note = require("./models/noteModel.js");
 
 const app = express();
 
+app.use(express.json());            
+app.use(express.urlencoded({ extended: true }));
+
 const jwt = require("jsonwebtoken");
 const { authenticateToken } = require("./utilities");
 
