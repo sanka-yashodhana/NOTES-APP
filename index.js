@@ -37,7 +37,17 @@ const { authenticateToken } = require("./utilities");
 
 app.use(express.json());
 
-app.use(cors("*"));
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173", 
+      "https://notes-app-frontend-psi-livid.vercel.app/"
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  })
+);
 
 //Create a Account
 app.post("/create-account", async (req, res) => {
