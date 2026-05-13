@@ -1,35 +1,33 @@
 require("dotenv").config();
 
+const express = require("express");
+const cors = require("cors");
 const mongoose = require("mongoose");
 
 const connectionString = process.env.MONGODB_URL;
 
-const connectDB = async()=>{
+const connectDB = async () => {
+  mongoose.connection.on("connected", () => {
+    console.log("DB Connected");
+  });
 
-    mongoose.connection.on('connected', ()=>{
-        console.log("DB Connected")
-    })
-
-   await mongoose.connect(`${connectionString}/Note-App-New`)
-}
-
+  await mongoose.connect(`${connectionString}/Note-App-New`);
+};
 
 connectDB();
 
 const User = require("./models/userModel.js");
 const Note = require("./models/noteModel.js");
 
-const express = require("express");
-const cors = require("cors");
 
 const app = express();
 
 const jwt = require("jsonwebtoken");
 const { authenticateToken } = require("./utilities");
 
-app.use(cors({ origin: "*" }));
+app.use(cors());
 
-//Create a Account
+// Create Account
 app.post("/create-account", async (req, res) => {
   const { fullName, email, password } = req.body;
 
@@ -37,9 +35,7 @@ app.post("/create-account", async (req, res) => {
     return res.status(400).json({ error: "All fields are required" });
   }
 
-  const isUser = await User.findOne({
-    email: email,
-  });
+  const isUser = await User.findOne({ email });
 
   if (isUser) {
     return res.status(400).json({
@@ -56,19 +52,20 @@ app.post("/create-account", async (req, res) => {
 
   await user.save();
 
+ 
   const accessToken = jwt.sign({ user }, process.env.JWT_SECRET, {
-    expiresIn: "3d",
+    expiresIn: "36h",
   });
 
   return res.json({
     error: false,
     user,
     accessToken,
-    message: "registration Successful",
+    message: "Registration Successful",
   });
 });
 
-//Login User
+// Login User
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
@@ -76,17 +73,16 @@ app.post("/login", async (req, res) => {
     return res.status(400).json({ message: "All fields are required" });
   }
 
-  const userInfo = await User.findOne({ email: email });
+  const userInfo = await User.findOne({ email });
 
   if (!userInfo) {
-    return res.status(400).json({ message: "Invalid email or password" });
+    return res.status(400).json({ message: "User not found" });
   }
 
   if (userInfo.email === email && userInfo.password === password) {
-    const user = { user: userInfo };
-
-    const accessToken = jwt.sign(user, process.env.JWT_SECRET, {
-      expiresIn: "1d",
+    
+    const accessToken = jwt.sign({ user: userInfo }, process.env.JWT_SECRET, {
+      expiresIn: "36h",
     });
 
     return res.json({
