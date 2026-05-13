@@ -1,9 +1,6 @@
 require("dotenv").config();
 
 const mongoose = require("mongoose");
-const dns = require("dns");
-
-dns.setServers(["1.1.1.1", "8.8.8.8"]);
 
 const connectionString = process.env.MONGODB_URL;
 
@@ -11,11 +8,12 @@ const connectDB = async () => {
   if (mongoose.connection.readyState >= 1) return; // Use existing connection
 
   try {
-    await mongoose.connect(connectionString, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      serverSelectionTimeoutMS: 5000, // Timeout after 5s instead of 10s
-    });
+    await mongoose
+      .connect(connectionString)
+      .then(() => console.log("Connected to MongoDB successfully"))
+      .catch((err) => {
+        console.error("MongoDB connection error:", err);
+      });
     console.log("Connected to MongoDB");
   } catch (err) {
     console.error("MongoDB connection error:", err);
@@ -35,10 +33,7 @@ const app = express();
 const jwt = require("jsonwebtoken");
 const { authenticateToken } = require("./utilities");
 
-app.use(
-  cors({ origin: "*" })
-);
-
+app.use(cors({ origin: "*" }));
 
 //Create a Account
 app.post("/create-account", async (req, res) => {
@@ -67,7 +62,7 @@ app.post("/create-account", async (req, res) => {
 
   await user.save();
 
- const accessToken = jwt.sign({ user }, process.env.JWT_SECRET, {
+  const accessToken = jwt.sign({ user }, process.env.JWT_SECRET, {
     expiresIn: "3d",
   });
 
