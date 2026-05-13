@@ -4,12 +4,22 @@ const mongoose = require("mongoose");
 
 const connectionString = process.env.MONGODB_URL;
 
-mongoose
-  .connect(connectionString)
-  .then(() => console.log("Connected to MongoDB successfully"))
-  .catch((err) => {
+const connectDB = async () => {
+  if (mongoose.connection.readyState >= 1) return; // Use existing connection
+
+  try {
+    await mongoose.connect(connectionString, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      serverSelectionTimeoutMS: 5000, // Timeout after 5s instead of 10s
+    });
+    console.log("Connected to MongoDB");
+  } catch (err) {
     console.error("MongoDB connection error:", err);
-  });
+  }
+};
+
+connectDB();
 
 const User = require("./models/userModel.js");
 const Note = require("./models/noteModel.js");
