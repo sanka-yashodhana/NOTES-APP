@@ -28,8 +28,14 @@ app.use(express.json());
 
 app.use(
   cors({
-    origin: "*",
-  }),
+    origin: [
+      "http://localhost:5173", 
+      "https://notes-app-frontend-psi-livid.vercel.app/dashboard" 
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  })
 );
 
 
