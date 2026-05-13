@@ -11,14 +11,11 @@ dns.setServers(["1.1.1.1","8.8.8.8"])
 const connectionString = process.env.MONGODB_URL;
 
 const connectDB = async () => {
-  mongoose.connection.on("connected", () => {
-    console.log("DB Connected");
-  });
-
+  if (mongoose.connection.readyState >= 1) return; // Already connected
+  
+  mongoose.connection.on("connected", () => console.log("DB Connected"));
   await mongoose.connect(`${connectionString}/Note-App-New`);
 };
-
-connectDB();
 
 const User = require("./models/userModel.js");
 const Note = require("./models/noteModel.js");
@@ -33,6 +30,7 @@ app.use(cors());
 
 // Create Account
 app.post("/create-account", async (req, res) => {
+  await connectDB();
   const { fullName, email, password } = req.body;
 
   if (!fullName || !email || !password) {
@@ -71,6 +69,7 @@ app.post("/create-account", async (req, res) => {
 
 // Login User
 app.post("/login", async (req, res) => {
+  await connectDB();
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -105,6 +104,7 @@ app.post("/login", async (req, res) => {
 
 //Get User
 app.get("/get-user", authenticateToken, async (req, res) => {
+  await connectDB();
   const { user } = req.user;
 
   try {
@@ -137,6 +137,7 @@ app.get("/get-user", authenticateToken, async (req, res) => {
 
 //Add Note
 app.post("/add-note", authenticateToken, async (req, res) => {
+  await connectDB();
   const { title, content, tags } = req.body;
   const { user } = req.user;
 
@@ -172,6 +173,7 @@ app.post("/add-note", authenticateToken, async (req, res) => {
 
 //Edit Note
 app.put("/edit-note/:noteId", authenticateToken, async (req, res) => {
+  await connectDB();
   const noteId = req.params.noteId;
   const { title, content, tags } = req.body;
   const { user } = req.user;
@@ -214,6 +216,7 @@ app.put("/edit-note/:noteId", authenticateToken, async (req, res) => {
 
 //Get All Notes
 app.get("/get-notes", authenticateToken, async (req, res) => {
+  await connectDB();
   const { user } = req.user;
 
   try {
@@ -237,6 +240,7 @@ app.get("/get-notes", authenticateToken, async (req, res) => {
 
 //Delete Note
 app.delete("/delete-note/:noteId", authenticateToken, async (req, res) => {
+  await connectDB();
   const noteId = req.params.noteId;
   const { user } = req.user;
 
@@ -264,6 +268,7 @@ app.delete("/delete-note/:noteId", authenticateToken, async (req, res) => {
 
 //update Note pin value
 app.put("/update-note-pin/:noteId", authenticateToken, async (req, res) => {
+  await connectDB();
   const noteId = req.params.noteId;
   const { isPinned } = req.body;
   const { user } = req.user;
@@ -297,6 +302,7 @@ app.put("/update-note-pin/:noteId", authenticateToken, async (req, res) => {
 
 //Search Notes
 app.get("/search-notes/", authenticateToken, async (req, res) => {
+  await connectDB();
   const { user } = req.user;
   const { query } = req.query;
 
