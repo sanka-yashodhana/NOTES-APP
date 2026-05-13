@@ -57,14 +57,14 @@ app.post("/create-account", async (req, res) => {
 
   await user.save();
 
-  const accesToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+  const accessToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
     expiresIn: "1d",
   });
 
   return res.json({
     error: false,
     user,
-    accesToken,
+    accessToken,
     message: "registration Successful",
   });
 });
