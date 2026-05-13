@@ -1,6 +1,9 @@
 require("dotenv").config();
 
 const mongoose = require("mongoose");
+const dns = require("dns");
+
+dns.setServers(["1.1.1.1","8.8.8.8"]);
 
 const connectionString = process.env.MONGODB_URL;
 
@@ -34,7 +37,7 @@ const { authenticateToken } = require("./utilities");
 
 app.use(express.json());
 
-app.use(cors());
+app.use(cors("*"));
 
 //Create a Account
 app.post("/create-account", async (req, res) => {
@@ -64,7 +67,7 @@ app.post("/create-account", async (req, res) => {
   await user.save();
 
   const accessToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-    expiresIn: "1d",
+    expiresIn: "3d",
   });
 
   return res.json({
