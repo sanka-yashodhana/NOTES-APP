@@ -36,12 +36,9 @@ const jwt = require("jsonwebtoken");
 const { authenticateToken } = require("./utilities");
 
 app.use(
-  cors({
-    origin: "*",
-  }),
+  cors({ origin: "*" })
 );
 
-app.use(cors("*"));
 
 //Create a Account
 app.post("/create-account", async (req, res) => {
@@ -70,7 +67,7 @@ app.post("/create-account", async (req, res) => {
 
   await user.save();
 
-  const accessToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+ const accessToken = jwt.sign({ user }, process.env.JWT_SECRET, {
     expiresIn: "3d",
   });
 
